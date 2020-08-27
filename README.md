@@ -6,6 +6,7 @@ Description of the project and things I'm going to use
 - use of `prop-types` package to control data type of props
 - use of `check-prop-types` to check the errors thrown by props data type
 - use of `beforeEach` for wrapper, avoiding repetition
+- **bootstrap** styling
 - **abstractions** 
   - create utils functions in `test/testUtils.js`: `findByTestAttr` and `checkProps`
   - enzyme adapter in `setupTests.js`

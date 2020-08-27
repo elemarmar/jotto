@@ -437,6 +437,56 @@ const GuessedWords = (props) => {
 
 
 
+<br />
+
+
+
+⚙️ **Creating the `getLetterMatchCount` Helper**
+
+This function will determine how many letters a guess has in common with the secret word. 
+
+**helpers/index.test.js**
+
+```jsx
+import { getLetterMatchCount } from './';
+
+describe('getLetterMatchCount', () => {
+  const secretWord = 'party';
+  
+  test('returns correct count when there are no matching letters'. () => {
+    const letterMatchCount = getLetterMatchCount('bones', secretWord);
+    expect(letterMatchCount).toBe(0);
+  });
+  test('returns correct count when there are 3 matching letters', () => {
+    const letterMatchCount = getLetterMatchCount('bart', secretWord);
+    expect(letterMatchCount).toBe(3);
+  });
+  test('returns correct count when there are duplicate letters in the guess', () => {
+    const letterMatchCount = getLetterMatchCount('algebra', secretWord);
+    expect(letterMatchCount).toBe(2);
+  })
+})
+
+```
+
+> 🔴 tests should fail!
+
+<br />
+
+**helpers/index.js**
+
+```jsx
+export function getLetterMatchCount(guessedWord, secretWord) {
+  const secretLetterSet = new Set(secretWord.split(''));
+  const guessedLetterSet = new Set(guessedWord.split(''));
+  return [...secretLetterSet].filter(letter => guessedLetterSet.has(letter)).length;
+}
+```
+
+> 🟢 all tests should pass!
+
+<br />
+
 jest methods:
 
 .not

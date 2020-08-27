@@ -281,7 +281,15 @@ describe('if there are no words guessed', () => {
 });
 
 describe('if there are words guessed', () => {
-  // code here
+  test('renders without error', () => {
+    // code here
+  });
+  test('renders "guessed words" section', () => {
+    // code here
+  });
+  test('correct number of guessed words', () => {
+    //code here
+  });
 });
 ```
 
@@ -322,7 +330,6 @@ describe('if there are no words guessed', () => {
     const instructions = findByTestAttr(wrapper, 'guess-instructions');
     expect(instructions.text().length).not.toBe(0);
   })
-
 });
 
 
@@ -330,19 +337,102 @@ describe('if there are no words guessed', () => {
 
 > 🔴 all tests except for the proptypes one should fail!
 
+**GuessedWords.js**
 
+```jsx
+const GuessedWords = (props) => {
+	let contents;
+	if (props.guessedWords.length === 0) {
+		contents = <span data-test="guess-instructions">Try to guess the secret word! </span>
+	} else {
+
+	}
+
+	return (
+		<div data-test="component-guessed-words">
+			{ contents }
+		</div>
+		);
+}
+```
 
 > 🟢 all tests should pass!
 
 
 
+<br />
+
 👉🏻 Case #2: There are guessed words 
 
 ```jsx
 describe('if there are words guessed', () => {
-  // code here
+  let wrapper;
+  
+  // we add more words for testing purposes
+  const guessedWords = [
+    { guessedWord: 'train', letterMatchCount: 3 },
+    { guessedWord: 'sunny', letterMatchCount: 1 },
+    { guessedWord: 'return', letterMatchCount: 5 },
+  ];
+  beforeEach(() => {
+    wrapper = setup({ guessedWords });
+  })
+  
+  test('renders without error', () => {
+    const component = findByTestAttr(wrapper, 'guess-instructions');
+    expect(instructions.length).toBe(1);
+  });
+  test('renders "guessed words" section', () => {
+    const guessedWordsNode = findTestAttr(wrapper, 'guess-words');
+    expect(guessedWordsNode.length).toBe(1);
+  });
+  test('correct number of guessed words', () => {
+    const guessedWordsNodes = findTestAttr(wrapper, 'guessed-word');
+    expect(guessedWordsNodes.length).toBe(guessedWords.length);
+  });
 });
 ```
+
+> 🔴 'renders "guessed words" section' and 'correct number of guesses words' should fail
+
+**GuessedWords.js**
+
+```jsx
+const GuessedWords = (props) => {
+	let contents;
+	if (props.guessedWords.length === 0) {
+		contents = <span data-test="guess-instructions">Try to guess the secret word! </span>
+	} else {
+    const guessedWordsRows = props.guessedWords.map((word, index) => (
+      <tr data-test="guessed-word" key={index}>
+        <td>{word.guessedWord}</td>
+        <td>{word.letterMatchCount}</td>		
+      </tr>
+    ));
+    contents = (
+      <div data-test="guessed-words">
+        <h3>Guessed Words</h3>
+        <table>
+          <thead>
+            <tr><th>Guess</th><th>Matching Letters</th></tr>
+          </thead>
+          <tbody>
+            { guessedWordsRows }
+          </tbody>
+        </table>
+      </div>
+    );
+	}
+
+	return (
+		<div data-test="component-guessed-words">
+			{ contents }
+		</div>
+	);
+}
+```
+
+> 🟢 all tests should pass!
 
 
 

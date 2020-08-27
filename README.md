@@ -5,6 +5,14 @@ Description of the project and things I'm going to use
 - use of `data-test` attributes
 - use of `prop-types` package to control data type of props
 - use of `check-prop-types` to check the errors thrown by props data type
+- use of `beforeEach` for wrapper, avoiding repetition
+- **abstractions** 
+  - create utils functions in `test/testUtils.js`: `findByTestAttr` and `checkProps`
+  - enzyme adapter in `setupTests.js`
+
+> Too many abstractions might result in hard-to-read tests 👉🏻 less useful in diagnosing failing tests
+
+> ⚠️ `setup()` not abstract because it's going to be different for each component
 
 <br />
 
@@ -40,13 +48,13 @@ Description of the project and things I'm going to use
 |____ Congrats.test.js
 ```
 
-👉🏻 **What it does**
+#### 👉🏻 **What it does**
 
 It renders a congratulations message when the user has guessed the word, that is, when the state `blabla` is set to `true`. Otherwise, it shouldn't display any message.
 
 <br />
 
-❓ **What tests do we want?**
+#### ❓ **What tests do we want?**
 
 - it renders without errors
 - it doesn't render text when `success` prop is  `false`
@@ -58,7 +66,7 @@ It renders a congratulations message when the user has guessed the word, that is
 
 <br />
 
-**🌲 Structure of tests from App.test.js** 
+#### **🌲 Structure of tests from App.test.js** 
 
 ```jsx
 test('renders without error', () => {
@@ -74,7 +82,7 @@ test('renders non-empty congrats message when `succes` prop is true', () => {
 
 <br />
 
-⚙️ **Create tools**
+#### ⚙️ **Create tools**
 
 - Create a setup function that will make a shallow wrapper out of our `Congrats` component.
 
@@ -122,7 +130,7 @@ test('renders non-empty congrats message when `succes` prop is true', () => {
 
 
 
-**🧪 Writting the tests**
+#### **🧪 Writting the tests**
 
 **Congrats.test.js**
 
@@ -205,8 +213,146 @@ Congrats.propTypes = {
 
 
 
+<br />
+
+
+
+---
+
+
+
+<br />
+
+
+
+## GuessedWords component
+
+```bash
+/ src /
+|___ GuessedWords.js
+|___ GuessedWords.test.js
+```
+
+
+
+#### 👉🏻 What it does
+
+It displays the user guesses and how many words match. If no word has been guessed, it displays instructions.
+
+It will receive an array of objects from the parent as a prop with the shape:
+
+```js
+[
+  { guessedWord: "train", letterMatchCount: 3 },
+  { guessedWord: "agile", letterMatchCount: 2 },
+]
+```
+
+> `guessedWord` is a string with the guessed word itself.
+>
+> `letterMatchCounte` is an int indicating how many letters of the guessed word match the secret word.
+
+
+
+#### ❓ **What tests do we want?**
+
+- it renders without errors
+- Proptypes test
+
+
+
+
+
+#### 🌲 Structure 
+
+```jsx
+test('does not throw warning with expected props', () => {
+  // code here
+});
+
+describe('if there are no words guessed', () => {
+  test('renders without error', () => {
+   // code here   
+  });
+  test('renders instructions to guess a word', () => {
+    // code here
+  })
+
+});
+
+describe('if there are words guessed', () => {
+  // code here
+});
+```
+
+
+
+#### 🧪 Writing tests
+
+👉🏻 Case #1: No words guessed
+
+**GuessedWords.test.js**
+
+```jsx
+const defaultProps = [ {
+  guessedWords: { guessedWord: 'train', letterMatchCount: 3 }
+  ]
+};
+
+const setup = (props={}) => {
+  const setupProps = { ...defaultProps, ...props };
+  return shallow(<GuessedWords {...setupProps } />);
+} 
+
+test('does not throw warning with expected props', () => {
+  checkProps(GuessedWords, defaultProps);
+})
+
+describe('if there are no words guessed', () => {
+  let wrapper;
+  beforeEach(() => {
+  	wrapper = setup({ guessedWords: [] });
+  })
+  test('renders without error', () => {
+   	const component = findTestAttr(wrapper, 'component-guessed-words');
+    expect(component.length).toBe(1);
+  });
+  
+  test('renders instructions to guess a word', () => {
+    const instructions = findByTestAttr(wrapper, 'guess-instructions');
+    expect(instructions.text().length).not.toBe(0);
+  })
+
+});
+
+
+```
+
+> 🔴 all tests except for the proptypes one should fail!
+
+
+
+> 🟢 all tests should pass!
+
+
+
+👉🏻 Case #2: There are guessed words 
+
+```jsx
+describe('if there are words guessed', () => {
+  // code here
+});
+```
+
+
+
 jest methods:
 
 .not
 
 toBeUndefined()
+
+```js
+
+```
+

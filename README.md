@@ -168,7 +168,7 @@ const Congrats = (props) => {
 
 > 🟢 all tests should pass!
 
-➕**Adding another test: testing the prop <span id="prop">types!</span>**
+➕**Adding another test: testing the prop<span id="prop">types!</span>**
 
 **Congrats.test.js**
 
